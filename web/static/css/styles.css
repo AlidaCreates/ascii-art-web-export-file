@@ -1,0 +1,24 @@
+h1 {
+  color: red;
+}
+
+textarea {
+  width: 100%;
+  border-radius: 5px;
+  background: #fff;
+  color: #000;
+  resize: none;
+  font-family: monospace;
+}
+
+@font-face {
+  font-family: "Iosevka";
+  src: url("/static/fonts/iosevka.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+.art-result {
+  font-family: "Iosevka", monospace;
+}
