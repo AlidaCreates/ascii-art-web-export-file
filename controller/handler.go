@@ -1,16 +1,22 @@
 package controller
 
 import (
+	"ascii-art-web/art"
+	"fmt"
+	"log"
 	"net/http"
 	"text/template"
-	"ascii-art-web/art"
 )
 
 func HandleHome(w http.ResponseWriter, r *http.Request) {
-	tmpl := template.Must(template.ParseFiles("templates/index.html"))
-	tmpl.Execute(w, nil)
+	loadAsciiArtForm(w)
 }
+
 func HandleAsciiArt(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodGet {
+		loadAsciiArtForm(w)
+		return
+	}
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
@@ -33,16 +39,25 @@ func HandleAsciiArt(w http.ResponseWriter, r *http.Request) {
 
 	font, err := art.LoadBanner(banner)
 	if err != nil {
-	http.Error(w, "Failed to load banner", http.StatusInternalServerError)
-	return
+		fmt.Println("Failed to load banner", err)
+		http.Error(w, "Failed to load banner", http.StatusInternalServerError)
+		return
 	}
 
 	result, err := art.RenderText(text, font)
 	if err != nil {
-	http.Error(w, "Internal server error", http.StatusInternalServerError)
-	return
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
 	}
 
-	tmpl := template.Must(template.ParseFiles("templates/ascii.html"))
-	tmpl.Execute(w, struct{ Result string }{Result: result})
+	tmpl := template.Must(template.ParseFiles("web/templates/index.html"))
+	err = tmpl.Execute(w, struct{ Result string }{Result: result})
+	if err != nil {
+		log.Println(err)
+	}
+}
+
+func loadAsciiArtForm(w http.ResponseWriter) {
+	tmpl := template.Must(template.ParseFiles("web/templates/index.html"))
+	tmpl.Execute(w, nil)
 }

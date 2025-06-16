@@ -23,6 +23,10 @@ var bannerHashes = map[string]string{
 }
 
 func LoadBanner(filename string) (Font, error) {
+	switch filename {
+	case "standard", "thinkertoy", "shadow":
+		filename += ".txt"
+	}
 	height, err := GetBannerHeight(filename)
 	if err != nil {
 		return nil, err
@@ -80,7 +84,7 @@ func validateBannerHash(filename string) error {
 	actual := fmt.Sprintf("%x", hash[:])
 
 	if actual != expected {
-		return fmt.Errorf("invalid banner: hash mismatch for %s", filename)
+		return fmt.Errorf("invalid banner: hash mismatch for %s, wanted: %s, got: %s", filename, expected, actual)
 	}
 	return nil
 }

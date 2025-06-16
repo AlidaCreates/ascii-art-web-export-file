@@ -11,13 +11,28 @@
       <form action="/ascii-art" method="post">
         <label for="text">Enter your text</label>
         <textarea name="text" id="text"></textarea>
+        <p>Select banner:</p>
+        <input
+          type="radio"
+          name="banner"
+          value="standard"
+          id="standardBanner"
+        /><label for="standardBanner">Standard</label>
+        <input
+          type="radio"
+          name="banner"
+          value="shadow"
+          id="shadowBanner"
+        /><label for="shadowBanner">Shadow</label>
+        <input
+          type="radio"
+          name="banner"
+          value="thinkertoy"
+          id="thinkertoyBanner"
+        /><label for="thinkertoyBanner">Thinkertoy</label>
+        <button type="submit">Generate</button>
       </form>
     </div>
-    <p>Select banner:</p>
-    <input type="radio" name="banner" value="standard" />Standard
-    <input type="radio" name="banner" value="shadow" />Shadow
-    <input type="radio" name="banner" value="thinkertoy" />Thinkertoy
-    <button type="submit">Generate</button>
     <div class="result-display">
       {{ if .Result }}
       <h2>Result:</h2>
