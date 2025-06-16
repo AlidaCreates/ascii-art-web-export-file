@@ -9,6 +9,14 @@ import (
 )
 
 func HandleHome(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/" {
+		handleNotFound(w)
+		return
+	}
+	if r.Method != http.MethodGet {
+		handleMethodNotAllowed(w, r)
+		return
+	}
 	loadAsciiArtForm(w)
 }
 
@@ -17,47 +25,87 @@ func HandleAsciiArt(w http.ResponseWriter, r *http.Request) {
 		loadAsciiArtForm(w)
 		return
 	}
+
 	if r.Method != http.MethodPost {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		handleMethodNotAllowed(w, r)
 		return
 	}
+
 	err := r.ParseForm()
 	if err != nil {
-		http.Error(w, "Bad request", http.StatusBadRequest)
+		handleBadRequest(w)
 		return
 	}
 	text := r.FormValue("text")
 	if text == "" {
-		http.Error(w, "Text is required", http.StatusBadRequest)
+		handleBadRequest(w)
 		return
 	}
+
 	banner := r.FormValue("banner")
 	if banner == "" {
-		http.Error(w, "Banner is required", http.StatusBadRequest)
-		return
+		banner = "standard"
 	}
 
 	font, err := art.LoadBanner(banner)
 	if err != nil {
 		fmt.Println("Failed to load banner", err)
-		http.Error(w, "Failed to load banner", http.StatusInternalServerError)
+		handleInternalError(w)
 		return
 	}
 
 	result, err := art.RenderText(text, font)
 	if err != nil {
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		fmt.Println(err)
+		handleInternalError(w)
 		return
 	}
 
-	tmpl := template.Must(template.ParseFiles("web/templates/index.html"))
+	tmpl := template.Must(template.ParseFiles(indexTemplatePath))
 	err = tmpl.Execute(w, struct{ Result string }{Result: result})
 	if err != nil {
 		log.Println(err)
 	}
 }
 
+func HandleError(w http.ResponseWriter, code int, msg string) {
+	tmpl := template.Must(template.ParseFiles(errorTemplatePath))
+	w.WriteHeader(code)
+	err := tmpl.Execute(w, struct {
+		ErrorCode    int
+		ErrorMessage string
+	}{
+		code, msg,
+	})
+	if err != nil {
+		log.Println(err)
+	}
+}
+
 func loadAsciiArtForm(w http.ResponseWriter) {
-	tmpl := template.Must(template.ParseFiles("web/templates/index.html"))
+	tmpl := template.Must(template.ParseFiles(indexTemplatePath))
 	tmpl.Execute(w, nil)
 }
+
+func handleMethodNotAllowed(w http.ResponseWriter, r *http.Request) {
+	responseText := fmt.Sprintf("Method %s is not allowed", r.Method)
+	HandleError(w, http.StatusMethodNotAllowed, responseText)
+}
+
+func handleBadRequest(w http.ResponseWriter) {
+	responseText := "Bad request"
+	HandleError(w, http.StatusBadRequest, responseText)
+}
+
+func handleNotFound(w http.ResponseWriter) {
+	responseText := "Not found"
+	HandleError(w, http.StatusNotFound, responseText)
+}
+
+func handleInternalError(w http.ResponseWriter) {
+	responseText := "Internal server error"
+	HandleError(w, http.StatusInternalServerError, responseText)
+}
+
+const indexTemplatePath = "web/templates/index.html"
+const errorTemplatePath = "web/templates/error.html"
