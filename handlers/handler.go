@@ -1,4 +1,4 @@
-package controller
+package handlers
 
 import (
 	"ascii-art-web/art"
@@ -62,7 +62,14 @@ func HandleAsciiArt(w http.ResponseWriter, r *http.Request) {
 	}
 
 	tmpl := template.Must(template.ParseFiles(indexTemplatePath))
-	err = tmpl.Execute(w, struct{ Result string }{Result: result})
+	err = tmpl.Execute(w, struct {
+		Result         string
+		SelectedBanner string
+		OldInput       string
+	}{
+		Result:         result,
+		SelectedBanner: banner,
+		OldInput:       text})
 	if err != nil {
 		log.Println(err)
 	}
