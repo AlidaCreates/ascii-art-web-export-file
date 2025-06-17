@@ -10,7 +10,8 @@ import (
 
 func HandleHome(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
-		handleNotFound(w)
+		err := "the resource at " + r.URL.Path + "that you are trying to access is not found"
+		handleNotFound(w, err)
 		return
 	}
 	if r.Method != http.MethodGet {
@@ -33,12 +34,17 @@ func HandleAsciiArt(w http.ResponseWriter, r *http.Request) {
 
 	err := r.ParseForm()
 	if err != nil {
-		handleBadRequest(w)
+		handleBadRequest(w, "malformed request")
 		return
 	}
 	text := r.FormValue("text")
 	if text == "" {
-		handleBadRequest(w)
+		handleBadRequest(w, "empty input is not valid.")
+		return
+	}
+
+	if len(text) > 1024 {
+		handleBadRequest(w, "input is too long")
 		return
 	}
 
@@ -49,15 +55,14 @@ func HandleAsciiArt(w http.ResponseWriter, r *http.Request) {
 
 	font, err := art.LoadBanner(banner)
 	if err != nil {
-		fmt.Println("Failed to load banner", err)
+		log.Println("Failed to load banner", err)
 		handleInternalError(w)
 		return
 	}
 
 	result, err := art.RenderText(text, font)
 	if err != nil {
-		fmt.Println(err)
-		handleInternalError(w)
+		handleBadRequest(w, err.Error())
 		return
 	}
 
@@ -95,17 +100,24 @@ func loadAsciiArtForm(w http.ResponseWriter) {
 }
 
 func handleMethodNotAllowed(w http.ResponseWriter, r *http.Request) {
-	responseText := fmt.Sprintf("Method %s is not allowed", r.Method)
+	str := "Method %s is not allowed"
+	responseText := fmt.Sprintf(str, r.Method)
 	HandleError(w, http.StatusMethodNotAllowed, responseText)
 }
 
-func handleBadRequest(w http.ResponseWriter) {
+func handleBadRequest(w http.ResponseWriter, msg string) {
 	responseText := "Bad request"
+	if msg != "" {
+		responseText += ": " + msg
+	}
 	HandleError(w, http.StatusBadRequest, responseText)
 }
 
-func handleNotFound(w http.ResponseWriter) {
+func handleNotFound(w http.ResponseWriter, msg string) {
 	responseText := "Not found"
+	if msg != "" {
+		responseText += ": " + msg
+	}
 	HandleError(w, http.StatusNotFound, responseText)
 }
 
