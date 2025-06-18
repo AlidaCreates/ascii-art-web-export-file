@@ -14,10 +14,11 @@ import (
 )
 
 func main() {
-	fs := static.StaticFS
-	// fs := http.FileServer(http.Dir("web/static"))
+	staticFS := http.FS(static.StaticFS)
+	fs := http.FileServer(staticFS)
 	mux := http.NewServeMux()
 	mux.Handle("/static/", http.StripPrefix("/static/", fs))
+
 	mux.HandleFunc("/", handlers.HandleHome)
 	mux.HandleFunc("/ascii-art", handlers.HandleAsciiArt)
 
