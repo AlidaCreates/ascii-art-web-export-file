@@ -52,4 +52,4 @@ func main() {
 	log.Println("Server exited properly")
 }
 
-var responseTimeout = 5 * time.Second
+const responseTimeout = 5 * time.Second
