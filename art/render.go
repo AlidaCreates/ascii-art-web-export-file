@@ -137,7 +137,7 @@ func RenderText(input string, font Font) (string, error) {
 	}
 
 	input = strings.ReplaceAll(input, "\\n", "\n")
-	input = strings.ReplaceAll(input, "\r", "\n") // user input will contain carriage return characters
+	input = strings.ReplaceAll(input, "\r\n", "\n") // user input will contain carriage return characters
 	lines := strings.Split(input, "\n")
 	var output strings.Builder
 

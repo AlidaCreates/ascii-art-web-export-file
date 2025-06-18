@@ -23,10 +23,10 @@ func HandleHome(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleAsciiArt(w http.ResponseWriter, r *http.Request) {
-	if r.Method == http.MethodGet {
-		loadAsciiArtForm(w)
-		return
-	}
+	// if r.Method == http.MethodGet {
+	// 	loadAsciiArtForm(w)
+	// 	return
+	// }
 
 	if r.Method != http.MethodPost {
 		handleMethodNotAllowed(w, r)
