@@ -4,7 +4,9 @@
     <div class="error-container">
       <h1>Error</h1>
       <div class="error-code" id="errorCode">Error {{ .ErrorCode }}</div>
-      <div class="error-message" id="errorMessage">{{ .ErrorMessage }}</div>
+      <div class="error-message" id="errorMessage">
+        {{ .ErrorMessage | html }}
+      </div>
       <div class="message">
         Something went wrong.<br />
         Please try again or return to the home page.

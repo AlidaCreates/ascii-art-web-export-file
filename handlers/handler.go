@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"ascii-art-web/art"
+	"ascii-art-web/web/templates"
 	"fmt"
 	"log"
 	"net/http"
@@ -10,7 +11,7 @@ import (
 
 func HandleHome(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
-		err := "the resource at " + r.URL.Path + "that you are trying to access is not found"
+		err := "the resource at " + r.URL.Path + " that you are trying to access is not found"
 		handleNotFound(w, err)
 		return
 	}
@@ -32,19 +33,16 @@ func HandleAsciiArt(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	r.Body = http.MaxBytesReader(w, r.Body, maxInputSize)
+
 	err := r.ParseForm()
 	if err != nil {
-		handleBadRequest(w, "malformed request")
+		handleBadRequest(w, "Malformed request")
 		return
 	}
 	text := r.FormValue("text")
 	if text == "" {
-		handleBadRequest(w, "empty input is not valid.")
-		return
-	}
-
-	if len(text) > 1024 {
-		handleBadRequest(w, "input is too long")
+		handleBadRequest(w, "Input text is empty")
 		return
 	}
 
@@ -66,8 +64,7 @@ func HandleAsciiArt(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tmpl := template.Must(template.ParseFiles(indexTemplatePath))
-	err = tmpl.Execute(w, struct {
+	err = mainPageTemplate.Execute(w, struct {
 		Result         string
 		SelectedBanner string
 		OldInput       string
@@ -81,9 +78,8 @@ func HandleAsciiArt(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleError(w http.ResponseWriter, code int, msg string) {
-	tmpl := template.Must(template.ParseFiles(errorTemplatePath))
 	w.WriteHeader(code)
-	err := tmpl.Execute(w, struct {
+	err := errorPageTemplate.Execute(w, struct {
 		ErrorCode    int
 		ErrorMessage string
 	}{
@@ -95,8 +91,7 @@ func HandleError(w http.ResponseWriter, code int, msg string) {
 }
 
 func loadAsciiArtForm(w http.ResponseWriter) {
-	tmpl := template.Must(template.ParseFiles(indexTemplatePath))
-	tmpl.Execute(w, nil)
+	mainPageTemplate.Execute(w, nil)
 }
 
 func handleMethodNotAllowed(w http.ResponseWriter, r *http.Request) {
@@ -126,5 +121,11 @@ func handleInternalError(w http.ResponseWriter) {
 	HandleError(w, http.StatusInternalServerError, responseText)
 }
 
-const indexTemplatePath = "web/templates/index.html"
-const errorTemplatePath = "web/templates/error.html"
+const indexTemplatePath = "index.html"
+const errorTemplatePath = "error.html"
+const maxInputSize = 1024
+
+var (
+	mainPageTemplate  = template.Must(template.ParseFS(templates.TemplatesFS, indexTemplatePath))
+	errorPageTemplate = template.Must(template.ParseFS(templates.TemplatesFS, errorTemplatePath))
+)
