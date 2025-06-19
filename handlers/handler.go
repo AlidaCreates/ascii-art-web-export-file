@@ -1,12 +1,13 @@
 package handlers
 
 import (
-	"ascii-art-web/art"
-	"ascii-art-web/web/templates"
 	"fmt"
 	"log"
 	"net/http"
 	"text/template"
+
+	"ascii-art-web/art"
+	"ascii-art-web/web/templates"
 )
 
 func HandleHome(w http.ResponseWriter, r *http.Request) {
@@ -23,11 +24,6 @@ func HandleHome(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleAsciiArt(w http.ResponseWriter, r *http.Request) {
-	// if r.Method == http.MethodGet {
-	// 	loadAsciiArtForm(w)
-	// 	return
-	// }
-
 	if r.Method != http.MethodPost {
 		handleMethodNotAllowed(w, r)
 		return
@@ -71,7 +67,8 @@ func HandleAsciiArt(w http.ResponseWriter, r *http.Request) {
 	}{
 		Result:         result,
 		SelectedBanner: banner,
-		OldInput:       text})
+		OldInput:       text,
+	})
 	if err != nil {
 		log.Println(err)
 	}
@@ -121,9 +118,11 @@ func handleInternalError(w http.ResponseWriter) {
 	HandleError(w, http.StatusInternalServerError, responseText)
 }
 
-const indexTemplatePath = "index.html"
-const errorTemplatePath = "error.html"
-const maxInputSize = 1024
+const (
+	indexTemplatePath = "index.html"
+	errorTemplatePath = "error.html"
+	maxInputSize      = 1024
+)
 
 var (
 	mainPageTemplate  = template.Must(template.ParseFS(templates.TemplatesFS, indexTemplatePath))
