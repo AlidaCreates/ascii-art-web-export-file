@@ -1,63 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>ASCII art web</title>
-    <link rel="stylesheet" href="/static/css/styles.css">
+  <meta charset="UTF-8" />
+  <title>ASCII art web</title>
+  <link rel="stylesheet" href="/static/css/styles.css" />
 </head>
 <body>
-<div class="container">
+  <div class="container">
     <h1>ASCII art web</h1>
     <button id="theme-toggle" class="theme-button">🌙 Toggle Theme</button>
 
     <form method="POST" action="/ascii-art">
-        <label for="text">Enter your text</label>
-       <textarea name="text" id="text" placeholder="Type something...">{{.OldInput}}</textarea>
+      <label for="text">Enter your text</label>
+      <textarea
+        name="text"
+        id="text"
+        placeholder="Type something..."
+        rows="6"
+        required
+      >{{if .OldInput}}{{.OldInput}}{{end}}</textarea>
 
+      <div class="tab-selector">
+        <input type="radio" name="banner" id="tab1" value="standard" {{if eq .SelectedBanner "standard"}}checked{{end}} />
+        <label for="tab1">Standard</label>
 
-       <div class="tab-selector">
-    <input type="radio" name="banner" id="tab1" value="standard" {{if eq .SelectedBanner "standard"}}checked{{end}}>
-    <label for="tab1">Standard</label>
+        <input type="radio" name="banner" id="tab2" value="shadow" {{if eq .SelectedBanner "shadow"}}checked{{end}} />
+        <label for="tab2">Shadow</label>
 
-    <input type="radio" name="banner" id="tab2" value="shadow" {{if eq .SelectedBanner "shadow"}}checked{{end}}>
-    <label for="tab2">Shadow</label>
+        <input type="radio" name="banner" id="tab3" value="thinkertoy" {{if eq .SelectedBanner "thinkertoy"}}checked{{end}} />
+        <label for="tab3">Thinkertoy</label>
 
-    <input type="radio" name="banner" id="tab3" value="thinkertoy" {{if eq .SelectedBanner "thinkertoy"}}checked{{end}}>
-    <label for="tab3">Thinkertoy</label>
+        <div class="tab-highlight"></div>
+      </div>
 
-    <div class="tab-highlight"></div>
-</div>
-
-
-        <button type="submit">Generate</button>
+      <button type="submit">Generate</button>
     </form>
 
     {{if .Result}}
     <div id="ascii-output">{{.Result}}</div>
     {{end}}
-    <script>
-  const toggle = document.getElementById('theme-toggle');
-  const body = document.body;
+  </div>
 
+  <script>
+    const toggle = document.getElementById('theme-toggle');
+    const body = document.body;
 
-  if (localStorage.getItem("theme") === "light") {
-    body.classList.add("light-theme");
-    toggle.textContent = "🌑 Dark Mode";
-  }
-
-  toggle.addEventListener("click", () => {
-    body.classList.toggle("light-theme");
-
-    if (body.classList.contains("light-theme")) {
-      localStorage.setItem("theme", "light");
+    if (localStorage.getItem("theme") === "light") {
+      body.classList.add("light-theme");
       toggle.textContent = "🌑 Dark Mode";
-    } else {
-      localStorage.setItem("theme", "dark");
-      toggle.textContent = "🔆 Light Mode";
     }
-  });
-</script>
 
-</div>
+    toggle.addEventListener("click", () => {
+      body.classList.toggle("light-theme");
+
+      if (body.classList.contains("light-theme")) {
+        localStorage.setItem("theme", "light");
+        toggle.textContent = "🌑 Dark Mode";
+      } else {
+        localStorage.setItem("theme", "dark");
+        toggle.textContent = "🔆 Light Mode";
+      }
+    });
+  </script>
 </body>
 </html>
