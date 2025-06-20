@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 docker image build -f Dockerfile -t ascii-art-web-docker .
 
 docker images

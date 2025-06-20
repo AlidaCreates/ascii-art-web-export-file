@@ -11,6 +11,7 @@ RUN go build -ldflags "-s -w" ./cmd/server
 
 FROM alpine:3.22
 
+RUN apk add --no-cache bash
 
 LABEL org.opencontainers.image.title="ascii-art-web-docker"
 LABEL org.opencontainers.image.version="1.0"
