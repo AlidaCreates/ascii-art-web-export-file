@@ -1,18 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-  <body>
-    <div class="error-container">
-      <h1>Error</h1>
-      <div class="error-code" id="errorCode">Error {{ .ErrorCode }}</div>
-      <div class="error-message" id="errorMessage">
-        {{ .ErrorMessage | html }}
-      </div>
-      <div class="message">
-        Something went wrong.<br />
-        Please try again or return to the home page.
-      </div>
+<head>
+  <meta charset="UTF-8" />
+  <title>Error {{ .ErrorCode }}</title>
+  <link rel="stylesheet" href="/static/css/styles.css" />
+</head>
+<body>
+  <script>
 
-      <a href="/" class="home-button">Return to Start</a>
+    if (localStorage.getItem("theme") === "light") {
+      document.body.classList.add("light-theme");
+    }
+  </script>
+
+  <div class="error-container">
+    <h1>Oops! Something went wrong 😢</h1>
+
+    <div class="error-box">
+      <div class="error-code">Error {{ .ErrorCode }}</div>
+      <div class="error-message">{{ .ErrorMessage | html }}</div>
     </div>
-  </body>
+
+    <p class="error-hint">
+      Something went wrong.<br />
+      Please try again or return to the home page.
+    </p>
+
+    <a href="/" class="home-button">← Return to Home</a>
+  </div>
+</body>
 </html>
