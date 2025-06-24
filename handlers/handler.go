@@ -88,7 +88,15 @@ func HandleError(w http.ResponseWriter, code int, msg string) {
 }
 
 func loadAsciiArtForm(w http.ResponseWriter) {
-	mainPageTemplate.Execute(w, nil)
+	mainPageTemplate.Execute(w, struct {
+		OldInput       string
+		SelectedBanner string
+		Result         string
+	}{
+		"",
+		"standard",
+		"",
+	})
 }
 
 func handleMethodNotAllowed(w http.ResponseWriter, r *http.Request) {
