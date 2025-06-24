@@ -1,10 +1,19 @@
-
 @font-face {
   font-family: "Iosevka";
   src: url("/static/fonts/iosevka.woff2") format("woff2");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
+}
+
+html {
+  box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
 }
 
 body {
@@ -24,7 +33,6 @@ body {
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
 }
 
-
 h1 {
   font-size: 2.5rem;
   color: #f44336;
@@ -32,7 +40,8 @@ h1 {
   margin-bottom: 30px;
 }
 
-input[type="text"] {
+input[type="text"],
+textarea {
   width: 100%;
   padding: 12px;
   font-size: 1rem;
@@ -40,8 +49,8 @@ input[type="text"] {
   border: 1px solid #888;
   background: #1a1a2e;
   color: #fff;
+  box-sizing: border-box;
 }
-
 
 button {
   padding: 10px 20px;
@@ -70,16 +79,17 @@ button:hover {
   margin-top: 25px;
 }
 
-
 .tab-selector {
   position: relative;
   display: flex;
   justify-content: space-between;
+  align-items: stretch;
   border-radius: 8px;
   background-color: #1a1a2e;
   padding: 8px;
   margin: 20px 0;
   overflow: hidden;
+  gap: 0; /* Prevent spacing between flex items */
 }
 
 .tab-selector input[type="radio"] {
@@ -87,7 +97,7 @@ button:hover {
 }
 
 .tab-selector label {
-  flex: 1;
+  flex: 1 1 0;
   text-align: center;
   padding: 12px 0;
   cursor: pointer;
@@ -96,6 +106,8 @@ button:hover {
   font-weight: 500;
   position: relative;
   transition: color 0.2s ease-in-out;
+  box-sizing: border-box;
+  margin: 0; /* Prevent default margin */
 }
 
 .tab-selector input[type="radio"]:checked + label {
@@ -114,7 +126,6 @@ button:hover {
   transition: left 0.3s ease;
 }
 
-
 #tab1:checked ~ .tab-highlight {
   left: 0;
 }
@@ -124,7 +135,6 @@ button:hover {
 #tab3:checked ~ .tab-highlight {
   left: calc(100% * 2 / 3);
 }
-
 
 .error-container {
   max-width: 700px;
@@ -200,7 +210,6 @@ button:hover {
   background-color: #666;
 }
 
-
 body.light-theme {
   background-color: #f0f0f0;
   color: #1e1e1e;
@@ -265,6 +274,7 @@ body.light-theme .home-button {
 body.light-theme .home-button:hover {
   background-color: #1976d2;
 }
+
 textarea {
   width: 100%;
   padding: 12px;
@@ -277,6 +287,7 @@ textarea {
   resize: vertical;
   max-height: 300px;
   overflow: auto;
+  box-sizing: border-box;
 }
 
 body.light-theme textarea {
@@ -284,8 +295,7 @@ body.light-theme textarea {
   color: #000;
   border: 1px solid #aaa;
 }
-  
-body.light-theme .error-hint {
-  color: #444; 
-}
 
+body.light-theme .error-hint {
+  color: #444;
+}
